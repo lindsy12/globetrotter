@@ -1,0 +1,16 @@
+{
+  "name": "globetrotter",
+  "version": "1.0.0",
+  "description": "GlobeTrotter travel planning app (Node/Express)",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.1"
+  }
+}
