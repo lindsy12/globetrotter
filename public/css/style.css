@@ -1,0 +1,529 @@
+/**
+ * public/css/style.css
+ *
+ * Shared GlobeTrotter design system: colors, type, spacing, and the
+ * common form/button/card/badge/sidebar components used across pages.
+ */
+
+:root {
+  /* Colors */
+  --color-bg: #FBF8F3;
+  --color-surface: #ffffff;
+  --color-border: #E4D9C8;
+  --color-input-bg: #FBF8F3;
+  --color-input-border: #D8CBBA;
+  --color-input-border-focus: #C9A84C;
+  --color-text-primary: #2B1B0F;
+  --color-text-muted: #8A7862;
+  --color-gold: #C9A84C;
+  --color-button-text: #1A0F00;
+  --color-label: #A9702E;
+  --color-error: #E53E3E;
+  --hero-overlay: rgba(18, 28, 45, 0.6);
+
+  /* Photo-overlay-only badges */
+  --badge-eco-bg: rgba(178, 201, 140, 0.35);
+  --badge-eco-text: #EAF1DE;
+  --badge-high-bg: rgba(166, 61, 47, 0.4);
+  --badge-high-text: #FBDCD5;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Type */
+  --font-heading: 'Playfair Display', serif;
+  --font-subheading: 'Cormorant Garamond', serif;
+  --font-body: 'Montserrat', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, .wordmark {
+  font-family: var(--font-heading);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.subtext, .quote {
+  font-family: var(--font-subheading);
+  color: var(--color-text-muted);
+}
+
+a {
+  color: var(--color-gold);
+}
+
+/* Labels */
+label, .label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-label);
+  margin-bottom: var(--space-2);
+}
+
+/* Inputs */
+.input,
+input[type="text"],
+input[type="search"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.input:focus,
+input:focus {
+  outline: none;
+  border-color: var(--color-input-border-focus);
+}
+
+.field {
+  margin-bottom: var(--space-5);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-block;
+  background: var(--color-gold);
+  color: var(--color-button-text);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 16px 32px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  opacity: 0.92;
+}
+
+/* Errors */
+.error-text {
+  color: var(--color-error);
+  font-family: var(--font-body);
+  font-size: 12px;
+  margin-top: 6px;
+  display: none;
+}
+
+.error-text.visible {
+  display: block;
+}
+
+/* Cards */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+/* App shell: sidebar + content, shared by index/destinations/itineraries/settings */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  padding: var(--space-6) var(--space-5);
+}
+
+.sidebar .wordmark {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: var(--space-7);
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  display: block;
+  padding: var(--space-3) var(--space-3);
+  margin-bottom: var(--space-2);
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  color: var(--color-text-primary);
+}
+
+.nav-item.active {
+  color: var(--color-gold);
+  background: var(--color-surface);
+}
+
+.content {
+  flex: 1;
+  background: var(--color-bg);
+  padding: var(--space-7) var(--space-8);
+}
+
+.content-header {
+  margin-bottom: var(--space-6);
+}
+
+/* Search bar (index + destinations) */
+.search-bar {
+  margin-bottom: var(--space-6);
+  max-width: 480px;
+}
+
+/* Tag chips (destination filters) */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.chip {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+}
+
+.chip.active {
+  color: var(--color-button-text);
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+}
+
+/* Destination card grid */
+.destination-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-5);
+}
+
+.destination-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  aspect-ratio: 4 / 5;
+  /* Placeholder in place of a real photo — no photo asset exists yet. */
+  background: linear-gradient(160deg, #d8cbba 0%, #8a7862 100%);
+  display: flex;
+  align-items: flex-end;
+}
+
+.destination-card .overlay {
+  width: 100%;
+  padding: var(--space-4);
+  background: linear-gradient(to top, rgba(26, 15, 0, 0.75), rgba(26, 15, 0, 0));
+  color: #fff;
+}
+
+.destination-card .name {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 18px;
+  color: #fff;
+}
+
+.destination-card .country {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #EDE6DA;
+  margin-top: var(--space-1);
+}
+
+.badge {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+}
+
+.badge.eco {
+  background: var(--badge-eco-bg);
+  color: var(--badge-eco-text);
+}
+
+.badge.high-impact {
+  background: var(--badge-high-bg);
+  color: var(--badge-high-text);
+}
+
+/* Auth split layout (login / register) */
+.auth-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.auth-photo {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  /* Placeholder in place of a real photo — no photo asset exists yet. */
+  background: linear-gradient(160deg, #d8cbba 0%, #8a7862 100%);
+}
+
+.auth-photo .quote {
+  padding: var(--space-8);
+  font-size: 22px;
+  font-style: italic;
+  color: #fff;
+  max-width: 460px;
+}
+
+.auth-form-panel {
+  flex: 1;
+  max-width: 480px;
+  background: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7);
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 340px;
+}
+
+.auth-form .wordmark {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+}
+
+.auth-form h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.auth-form .subtext {
+  font-size: 17px;
+  margin-bottom: var(--space-6);
+}
+
+.auth-form-footer {
+  margin-top: var(--space-5);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 860px) {
+  .auth-photo {
+    display: none;
+  }
+  .auth-form-panel {
+    max-width: none;
+  }
+  .sidebar {
+    width: 72px;
+    padding: var(--space-5) var(--space-2);
+  }
+  .sidebar .wordmark,
+  .nav-item {
+    display: none;
+  }
+}
+
+/* Discover page: hero + stacked content sections */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6);
+  overflow: hidden;
+  color: #fff;
+  /* Placeholder in place of a real photo — no photo asset exists yet. */
+  background: linear-gradient(160deg, #3a4a63 0%, #121c2d 100%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--hero-overlay);
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-nav {
+  position: absolute;
+  top: var(--space-6);
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: var(--space-6);
+}
+
+.hero-nav a {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.hero-nav a:hover {
+  opacity: 1;
+}
+
+.hero-wordmark {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-6);
+}
+
+.hero-headline {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 44px;
+  min-height: 1.3em;
+}
+
+.hero-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 3px;
+  background: #fff;
+  vertical-align: text-bottom;
+  animation: blink 0.9s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero-subtext {
+  font-family: var(--font-subheading);
+  font-style: italic;
+  font-size: 20px;
+  color: #EDE6DA;
+  margin-top: var(--space-4);
+  max-width: 520px;
+}
+
+.hero-search {
+  margin-top: var(--space-6);
+  width: 100%;
+  max-width: 360px;
+}
+
+.hero-actions {
+  margin-top: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hero-actions .btn-primary {
+  text-decoration: none;
+}
+
+.hero-actions .secondary-link {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #EDE6DA;
+  margin: 0;
+}
+
+.hero-actions .secondary-link a {
+  color: #fff;
+}
+
+.content-section {
+  background: var(--color-bg);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+.content-section h2 {
+  margin-bottom: var(--space-4);
+}
+
+.content-section p {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  max-width: 640px;
+  margin: 0 auto;
+}

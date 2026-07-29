@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="auth-shell">
+  <div class="auth-photo">
+    <p class="quote">&ldquo;Not all those who wander are lost.&rdquo;</p>
+  </div>
+  <div class="auth-form-panel">
+    <div class="auth-form">
+      <div class="wordmark">GlobeTrotter</div>
+      <h1>Create your account</h1>
+      <p class="subtext">Tell us a little about how you like to travel.</p>
+
+      <form id="register-form" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label>Travel Preferences</label>
+          <div class="chip-row" id="preference-chips">
+            <button type="button" class="chip" data-tag="beach">Beach</button>
+            <button type="button" class="chip" data-tag="food">Food</button>
+            <button type="button" class="chip" data-tag="culture">Culture</button>
+            <button type="button" class="chip" data-tag="adventure">Adventure</button>
+            <button type="button" class="chip" data-tag="nature">Nature</button>
+            <button type="button" class="chip" data-tag="nightlife">Nightlife</button>
+          </div>
+        </div>
+        <p id="form-error" class="error-text"></p>
+        <button type="submit" class="btn-primary">Register</button>
+      </form>
+
+      <p class="auth-form-footer">Already have an account? <a href="/login.html">Log in</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  const selectedTags = new Set();
+
+  document.getElementById('preference-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    const tag = chip.dataset.tag;
+    if (selectedTags.has(tag)) {
+      selectedTags.delete(tag);
+      chip.classList.remove('active');
+    } else {
+      selectedTags.add(tag);
+      chip.classList.add('active');
+    }
+  });
+
+  document.getElementById('register-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById('form-error');
+    errorEl.classList.remove('visible');
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    if (password !== confirmPassword) {
+      errorEl.textContent = 'Passwords do not match';
+      errorEl.classList.add('visible');
+      return;
+    }
+
+    try {
+      await apiFetch('/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          username,
+          password,
+          preferences: Array.from(selectedTags),
+        }),
+      });
+      window.location.href = '/login.html';
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.classList.add('visible');
+    }
+  });
+</script>
+</body>
+</html>

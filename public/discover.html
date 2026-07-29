@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<section class="hero">
+  <nav class="hero-nav">
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="hero-wordmark">GLOBETROTTER</div>
+
+  <h1 class="hero-headline"><span id="typed-text"></span><span class="hero-cursor"></span></h1>
+
+  <p class="hero-subtext">Curated journeys, considered footprints, and the places worth slowing down for.</p>
+
+  <div class="hero-search">
+    <input type="search" class="input" placeholder="Where do you want to go?">
+  </div>
+
+  <div class="hero-actions">
+    <a href="/login.html" class="btn-primary">Log In</a>
+    <p class="secondary-link">New here? <a href="/register.html">Create new account</a></p>
+  </div>
+</section>
+
+<section id="about" class="content-section">
+  <h2>About GlobeTrotter</h2>
+  <p>This section is still being written — check back soon.</p>
+</section>
+
+<section id="contact" class="content-section">
+  <h2>Contact</h2>
+  <p>This section is still being written — check back soon.</p>
+</section>
+
+<script>
+  const headline = 'discover Yaoundé, thoughtfully.';
+  const typedEl = document.getElementById('typed-text');
+  let charIndex = 0;
+
+  function typeNextChar() {
+    if (charIndex <= headline.length) {
+      typedEl.textContent = headline.slice(0, charIndex);
+      charIndex++;
+      setTimeout(typeNextChar, 60);
+    }
+  }
+
+  typeNextChar();
+</script>
+</body>
+</html>

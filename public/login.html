@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="auth-shell">
+  <div class="auth-photo">
+    <p class="quote">&ldquo;The world is a book, and those who do not travel read only one page.&rdquo;</p>
+  </div>
+  <div class="auth-form-panel">
+    <div class="auth-form">
+      <div class="wordmark">GlobeTrotter</div>
+      <h1>Welcome back</h1>
+      <p class="subtext">Sign in to continue planning your next journey.</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+        <p id="form-error" class="error-text"></p>
+        <button type="submit" class="btn-primary">Log In</button>
+      </form>
+
+      <p class="auth-form-footer">Don't have an account? <a href="/register.html">Register</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById('form-error');
+    errorEl.classList.remove('visible');
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      const data = await apiFetch('/login', {
+        method: 'POST',
+        body: JSON.stringify({ username, password }),
+      });
+      setToken(data.token);
+      window.location.href = '/index.html';
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.classList.add('visible');
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="wordmark">GlobeTrotter</div>
+    <ul class="nav-list">
+      <li><a class="nav-item active" href="/index.html">Home</a></li>
+      <li><a class="nav-item" href="/destinations.html">Destinations</a></li>
+      <li><a class="nav-item" href="/itineraries.html">Itineraries</a></li>
+      <li><a class="nav-item" href="/settings.html">Settings</a></li>
+      <li><a class="nav-item" href="#" id="logout-link">Log Out</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <div class="content-header">
+      <h1>Recommended For You</h1>
+      <p class="subtext">Picked from your travel preferences.</p>
+    </div>
+
+    <div class="search-bar">
+      <label for="search">Search destinations</label>
+      <input type="search" id="search" placeholder="Try “Tokyo” or “beach”">
+    </div>
+
+    <div class="destination-grid" id="destination-grid">
+      <p class="subtext">Loading recommendations…</p>
+    </div>
+  </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  requireAuthOrRedirect();
+
+  document.getElementById('logout-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
+
+  function renderDestinations(destinations) {
+    const grid = document.getElementById('destination-grid');
+    grid.innerHTML = '';
+
+    if (destinations.length === 0) {
+      grid.innerHTML = '<p class="subtext">No destinations to show yet.</p>';
+      return;
+    }
+
+    destinations.forEach((dest) => {
+      const card = document.createElement('div');
+      card.className = 'destination-card';
+
+      const badgeInfo = getBadgeInfo(dest);
+      const badgeHtml = badgeInfo
+        ? `<span class="badge ${badgeInfo.type}">${badgeInfo.label}</span>`
+        : '';
+
+      card.innerHTML = `
+        ${badgeHtml}
+        <div class="overlay">
+          <div class="name">${dest.name || ''}</div>
+          <div class="country">${dest.country || dest.continent || ''}</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  async function loadRecommendations() {
+    try {
+      const data = await apiFetch('/recommendations');
+      renderDestinations(data);
+    } catch (err) {
+      document.getElementById('destination-grid').innerHTML =
+        `<p class="error-text visible">${err.message}</p>`;
+    }
+  }
+
+  document.getElementById('search').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      window.location.href = `/destinations.html?q=${encodeURIComponent(e.target.value.trim())}`;
+    }
+  });
+
+  loadRecommendations();
+</script>
+</body>
+</html>

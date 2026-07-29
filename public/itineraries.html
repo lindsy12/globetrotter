@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Itineraries — GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="wordmark">GlobeTrotter</div>
+    <ul class="nav-list">
+      <li><a class="nav-item" href="/index.html">Home</a></li>
+      <li><a class="nav-item" href="/destinations.html">Destinations</a></li>
+      <li><a class="nav-item active" href="/itineraries.html">Itineraries</a></li>
+      <li><a class="nav-item" href="/settings.html">Settings</a></li>
+      <li><a class="nav-item" href="#" id="logout-link">Log Out</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <div class="content-header">
+      <h1>Itineraries</h1>
+      <p class="subtext">Your saved trips will appear here.</p>
+    </div>
+    <div class="card" style="padding: var(--space-6);">
+      <p class="subtext">Itinerary planning is coming soon.</p>
+    </div>
+  </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  requireAuthOrRedirect();
+
+  document.getElementById('logout-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
+</script>
+</body>
+</html>

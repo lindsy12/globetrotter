@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destinations — GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="wordmark">GlobeTrotter</div>
+    <ul class="nav-list">
+      <li><a class="nav-item" href="/index.html">Home</a></li>
+      <li><a class="nav-item active" href="/destinations.html">Destinations</a></li>
+      <li><a class="nav-item" href="/itineraries.html">Itineraries</a></li>
+      <li><a class="nav-item" href="/settings.html">Settings</a></li>
+      <li><a class="nav-item" href="#" id="logout-link">Log Out</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+    <div class="content-header">
+      <h1>Destinations</h1>
+      <p class="subtext">Search the full catalogue by name, tag, or continent.</p>
+    </div>
+
+    <div class="search-bar">
+      <label for="search">Search destinations</label>
+      <input type="search" id="search" placeholder="Try “Tokyo” or “beach”">
+    </div>
+
+    <div class="chip-row" id="tag-chips">
+      <button type="button" class="chip" data-tag="beach">Beach</button>
+      <button type="button" class="chip" data-tag="food">Food</button>
+      <button type="button" class="chip" data-tag="culture">Culture</button>
+      <button type="button" class="chip" data-tag="adventure">Adventure</button>
+      <button type="button" class="chip" data-tag="nature">Nature</button>
+      <button type="button" class="chip" data-tag="nightlife">Nightlife</button>
+    </div>
+
+    <div class="destination-grid" id="destination-grid">
+      <p class="subtext">Loading destinations…</p>
+    </div>
+  </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  requireAuthOrRedirect();
+
+  document.getElementById('logout-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
+
+  let activeTag = null;
+
+  function renderDestinations(destinations) {
+    const grid = document.getElementById('destination-grid');
+    grid.innerHTML = '';
+
+    if (destinations.length === 0) {
+      grid.innerHTML = '<p class="subtext">No destinations match your search.</p>';
+      return;
+    }
+
+    destinations.forEach((dest) => {
+      const card = document.createElement('div');
+      card.className = 'destination-card';
+
+      const badgeInfo = getBadgeInfo(dest);
+      const badgeHtml = badgeInfo
+        ? `<span class="badge ${badgeInfo.type}">${badgeInfo.label}</span>`
+        : '';
+
+      card.innerHTML = `
+        ${badgeHtml}
+        <div class="overlay">
+          <div class="name">${dest.name || ''}</div>
+          <div class="country">${dest.country || dest.continent || ''}</div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  async function loadDestinations() {
+    const grid = document.getElementById('destination-grid');
+    grid.innerHTML = '<p class="subtext">Loading destinations…</p>';
+
+    const params = new URLSearchParams();
+    const q = document.getElementById('search').value.trim();
+    if (q) params.set('q', q);
+    if (activeTag) params.set('tag', activeTag);
+
+    try {
+      const data = await apiFetch(`/destinations?${params.toString()}`);
+      renderDestinations(data);
+    } catch (err) {
+      grid.innerHTML = `<p class="error-text visible">${err.message}</p>`;
+    }
+  }
+
+  document.getElementById('tag-chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+
+    const tag = chip.dataset.tag;
+    const wasActive = chip.classList.contains('active');
+
+    document.querySelectorAll('#tag-chips .chip').forEach((c) => c.classList.remove('active'));
+
+    if (wasActive) {
+      activeTag = null;
+    } else {
+      chip.classList.add('active');
+      activeTag = tag;
+    }
+
+    loadDestinations();
+  });
+
+  document.getElementById('search').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') loadDestinations();
+  });
+
+  const initialQuery = new URLSearchParams(window.location.search).get('q');
+  if (initialQuery) {
+    document.getElementById('search').value = initialQuery;
+  }
+
+  loadDestinations();
+</script>
+</body>
+</html>
