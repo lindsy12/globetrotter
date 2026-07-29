@@ -12,6 +12,43 @@ const { getAllDestinations } = require('./models');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * /destinations:
+ *   get:
+ *     summary: Search the destination catalogue
+ *     tags: [Destinations]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Free-text search against the destination name
+ *       - in: query
+ *         name: tag
+ *         schema:
+ *           type: string
+ *         description: Filter by a single interest tag (e.g. beach)
+ *       - in: query
+ *         name: continent
+ *         schema:
+ *           type: string
+ *         description: Filter by continent name
+ *       - in: query
+ *         name: max_cost
+ *         schema:
+ *           type: number
+ *         description: Filter by maximum cost
+ *     responses:
+ *       200:
+ *         description: A list of matching destinations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ */
 router.get('/destinations', (req, res) => {
   let results = getAllDestinations();
   const { q, tag, continent, max_cost: maxCost } = req.query;
