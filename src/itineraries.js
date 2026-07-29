@@ -10,16 +10,52 @@
  */
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { getItinerariesForUser, saveItinerary } = require('./models');
-const { getCurrentUser } = require('./auth');
+const { getItinerariesForUser, getItineraryById, saveItinerary } = require('./models');
+const { requireAuth } = require('./auth');
 
 const router = express.Router();
 
-router.post('/itineraries', (req, res) => {
-  const username = getCurrentUser(req);
-  if (!username) {
-    return res.status(401).json({ error: 'authentication required' });
-  }
+/**
+ * @swagger
+ * /itineraries:
+ *   post:
+ *     summary: Create a new itinerary
+ *     tags: [Itineraries]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - destinations
+ *             properties:
+ *               title:
+ *                 type: string
+ *               destinations:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Destination names
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Itinerary created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       400:
+ *         description: title and destinations[] are required
+ *       401:
+ *         description: authentication required
+ */
+router.post('/itineraries', requireAuth, (req, res) => {
+  const username = req.user;
 
   const { title, destinations, notes } = req.body;
 
@@ -39,14 +75,63 @@ router.post('/itineraries', (req, res) => {
   return res.status(201).json(itinerary);
 });
 
-router.get('/itineraries', (req, res) => {
-  const username = getCurrentUser(req);
-  if (!username) {
-    return res.status(401).json({ error: 'authentication required' });
-  }
-
-  const mine = getItinerariesForUser(username);
+/**
+ * @swagger
+ * /itineraries:
+ *   get:
+ *     summary: List the logged-in user's itineraries
+ *     tags: [Itineraries]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The user's itineraries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       401:
+ *         description: authentication required
+ */
+router.get('/itineraries', requireAuth, (req, res) => {
+  const mine = getItinerariesForUser(req.user);
   return res.json(mine);
+});
+
+/**
+ * GET /itineraries/:id
+ * Public — no authentication required, acts as a shareable link.
+ *
+ * @swagger
+ * /itineraries/{id}:
+ *   get:
+ *     summary: Get a single itinerary by id (public, shareable link)
+ *     tags: [Itineraries]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Itinerary id
+ *     responses:
+ *       200:
+ *         description: The itinerary
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: itinerary not found
+ */
+router.get('/itineraries/:id', (req, res) => {
+  const itinerary = getItineraryById(req.params.id);
+  if (!itinerary) {
+    return res.status(404).json({ error: 'itinerary not found' });
+  }
+  return res.json(itinerary);
 });
 
 module.exports = router;
