@@ -9,17 +9,36 @@
  */
 const express = require('express');
 const { getAllDestinations, getUserByUsername } = require('./models');
-const { getCurrentUser } = require('./auth');
+const { requireAuth } = require('./auth');
 
 const router = express.Router();
 
-router.get('/recommendations', (req, res) => {
-  const username = getCurrentUser(req);
-  if (!username) {
-    return res.status(401).json({ error: 'authentication required' });
-  }
-
-  const user = getUserByUsername(username);
+/**
+ * @swagger
+ * /recommendations:
+ *   get:
+ *     summary: Get personalized destination recommendations
+ *     description: >
+ *       Filters the destination catalogue by the logged-in user's stored
+ *       preference tags. If the user has no preferences set, returns the
+ *       first 5 destinations instead.
+ *     tags: [Recommendations]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Recommended destinations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       401:
+ *         description: authentication required
+ */
+router.get('/recommendations', requireAuth, (req, res) => {
+  const user = getUserByUsername(req.user);
   const preferences = (user && user.preferences) || [];
 
   const destinations = getAllDestinations();
