@@ -59,6 +59,20 @@ function getCurrentUser(req) {
   }
 }
 
+/**
+ * Express middleware that requires a valid JWT.
+ * Responds 401 and stops the chain if missing/invalid, otherwise
+ * attaches the username to req.user and calls next().
+ */
+function requireAuth(req, res, next) {
+  const username = getCurrentUser(req);
+  if (!username) {
+    return res.status(401).json({ error: 'authentication required' });
+  }
+  req.user = username;
+  next();
+}
+
 // ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
@@ -66,6 +80,46 @@ function getCurrentUser(req) {
 /**
  * POST /register
  * Body: { username, password, preferences? }
+ *
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new user account
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               preferences:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 username:
+ *                   type: string
+ *       400:
+ *         description: username and password are required
+ *       409:
+ *         description: username already exists
  */
 router.post('/register', (req, res) => {
   const username = (req.body.username || '').trim();
@@ -94,6 +148,40 @@ router.post('/register', (req, res) => {
 /**
  * POST /login
  * Body: { username, password }
+ *
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Authenticate and receive a JWT
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: username and password are required
+ *       401:
+ *         description: invalid credentials
  */
 router.post('/login', (req, res) => {
   const username = (req.body.username || '').trim();
@@ -112,4 +200,4 @@ router.post('/login', (req, res) => {
   return res.status(200).json({ token });
 });
 
-module.exports = { router, getCurrentUser };
+module.exports = { router, getCurrentUser, requireAuth };
