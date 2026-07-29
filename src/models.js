@@ -88,6 +88,10 @@ function getItinerariesForUser(username) {
   return getAllItineraries().filter((it) => it.username === username);
 }
 
+function getItineraryById(id) {
+  return getAllItineraries().find((it) => it.id === id) || null;
+}
+
 function saveItinerary(itinerary) {
   const itineraries = getAllItineraries();
   itineraries.push(itinerary);
@@ -101,5 +105,6 @@ module.exports = {
   getAllDestinations,
   getAllItineraries,
   getItinerariesForUser,
+  getItineraryById,
   saveItinerary,
 };
