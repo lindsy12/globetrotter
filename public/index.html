@@ -56,22 +56,7 @@
     }
 
     destinations.forEach((dest) => {
-      const card = document.createElement('div');
-      card.className = 'destination-card';
-
-      const badgeInfo = getBadgeInfo(dest);
-      const badgeHtml = badgeInfo
-        ? `<span class="badge ${badgeInfo.type}">${badgeInfo.label}</span>`
-        : '';
-
-      card.innerHTML = `
-        ${badgeHtml}
-        <div class="overlay">
-          <div class="name">${dest.name || ''}</div>
-          <div class="country">${dest.country || dest.continent || ''}</div>
-        </div>
-      `;
-      grid.appendChild(card);
+      grid.appendChild(createDestinationCard(dest));
     });
   }
 
