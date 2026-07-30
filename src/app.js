@@ -34,6 +34,14 @@ app.use('/', recommendationsRouter);
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message =
+    err.type === 'entity.parse.failed' ? 'malformed JSON in request body' : err.message || 'internal server error';
+  res.status(status).json({ error: message });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`GlobeTrotter monolith running on http://localhost:${PORT}`);
