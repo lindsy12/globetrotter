@@ -10,7 +10,13 @@
  */
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { getItinerariesForUser, getItineraryById, saveItinerary } = require('./models');
+const {
+  getItinerariesForUser,
+  getItineraryById,
+  saveItinerary,
+  updateItinerary,
+  deleteItinerary,
+} = require('./models');
 const { requireAuth } = require('./auth');
 
 const router = express.Router();
@@ -140,6 +146,113 @@ router.get('/itineraries/:id', (req, res) => {
     return res.status(404).json({ error: 'itinerary not found' });
   }
   return res.json(itinerary);
+});
+
+/**
+ * @swagger
+ * /itineraries/{id}:
+ *   put:
+ *     summary: Update an itinerary (owner only)
+ *     tags: [Itineraries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Itinerary id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               destinations:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               notes:
+ *                 type: string
+ *               start_date:
+ *                 type: string
+ *                 example: "2026-08-14"
+ *               end_date:
+ *                 type: string
+ *                 example: "2026-08-20"
+ *     responses:
+ *       200:
+ *         description: The updated itinerary
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       401:
+ *         description: authentication required
+ *       403:
+ *         description: you do not own this itinerary
+ *       404:
+ *         description: itinerary not found
+ */
+router.put('/itineraries/:id', requireAuth, (req, res) => {
+  const { title, destinations, notes, start_date: startDate, end_date: endDate } = req.body;
+
+  const result = updateItinerary(req.params.id, req.user, {
+    title,
+    destinations,
+    notes,
+    start_date: startDate,
+    end_date: endDate,
+  });
+
+  if (result.error === 'not_found') {
+    return res.status(404).json({ error: 'itinerary not found' });
+  }
+  if (result.error === 'forbidden') {
+    return res.status(403).json({ error: 'you do not own this itinerary' });
+  }
+  return res.status(200).json(result.itinerary);
+});
+
+/**
+ * @swagger
+ * /itineraries/{id}:
+ *   delete:
+ *     summary: Delete an itinerary (owner only)
+ *     tags: [Itineraries]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Itinerary id
+ *     responses:
+ *       200:
+ *         description: Itinerary deleted
+ *       401:
+ *         description: authentication required
+ *       403:
+ *         description: you do not own this itinerary
+ *       404:
+ *         description: itinerary not found
+ */
+router.delete('/itineraries/:id', requireAuth, (req, res) => {
+  const result = deleteItinerary(req.params.id, req.user);
+
+  if (result.error === 'not_found') {
+    return res.status(404).json({ error: 'itinerary not found' });
+  }
+  if (result.error === 'forbidden') {
+    return res.status(403).json({ error: 'you do not own this itinerary' });
+  }
+  return res.status(200).json({ message: 'itinerary deleted' });
 });
 
 module.exports = router;

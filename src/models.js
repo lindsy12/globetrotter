@@ -98,6 +98,27 @@ function saveItinerary(itinerary) {
   writeJson(ITINERARIES_FILE, itineraries);
 }
 
+function updateItinerary(id, username, updates) {
+  const all = getAllItineraries();
+  const index = all.findIndex((it) => it.id === id);
+  if (index === -1) return { error: 'not_found' };
+  if (all[index].username !== username) return { error: 'forbidden' };
+  all[index] = { ...all[index], ...updates, id, username }; // prevent
+    // overwriting id/username via the update payload
+  writeJson(ITINERARIES_FILE, all);
+  return { itinerary: all[index] };
+}
+
+function deleteItinerary(id, username) {
+  const all = getAllItineraries();
+  const index = all.findIndex((it) => it.id === id);
+  if (index === -1) return { error: 'not_found' };
+  if (all[index].username !== username) return { error: 'forbidden' };
+  all.splice(index, 1);
+  writeJson(ITINERARIES_FILE, all);
+  return { success: true };
+}
+
 module.exports = {
   getAllUsers,
   getUserByUsername,
@@ -107,4 +128,6 @@ module.exports = {
   getItinerariesForUser,
   getItineraryById,
   saveItinerary,
+  updateItinerary,
+  deleteItinerary,
 };
