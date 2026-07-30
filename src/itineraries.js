@@ -42,6 +42,12 @@ const router = express.Router();
  *                 description: Destination names
  *               notes:
  *                 type: string
+ *               start_date:
+ *                 type: string
+ *                 example: "2026-08-14"
+ *               end_date:
+ *                 type: string
+ *                 example: "2026-08-20"
  *     responses:
  *       201:
  *         description: Itinerary created
@@ -57,7 +63,7 @@ const router = express.Router();
 router.post('/itineraries', requireAuth, (req, res) => {
   const username = req.user;
 
-  const { title, destinations, notes } = req.body;
+  const { title, destinations, notes, start_date: startDate, end_date: endDate } = req.body;
 
   if (!title || !Array.isArray(destinations) || destinations.length === 0) {
     return res.status(400).json({ error: 'title and destinations[] are required' });
@@ -69,6 +75,8 @@ router.post('/itineraries', requireAuth, (req, res) => {
     title,
     destinations, // array of destination NAMES, matching lecturer's design
     notes: notes || '',
+    start_date: startDate || null,
+    end_date: endDate || null,
   };
 
   saveItinerary(itinerary);
