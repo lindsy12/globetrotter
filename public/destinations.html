@@ -97,6 +97,7 @@
     const wasActive = chip.classList.contains('active');
 
     document.querySelectorAll('#tag-chips .chip').forEach((c) => c.classList.remove('active'));
+    document.getElementById('search').value = '';
 
     if (wasActive) {
       activeTag = null;
@@ -105,6 +106,12 @@
       activeTag = tag;
     }
 
+    loadDestinations();
+  });
+
+  document.getElementById('search').addEventListener('input', () => {
+    activeTag = null;
+    document.querySelectorAll('#tag-chips .chip').forEach((c) => c.classList.remove('active'));
     loadDestinations();
   });
 
