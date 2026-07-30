@@ -12,12 +12,12 @@
   --color-border: #E4D9C8;
   --color-input-bg: #FBF8F3;
   --color-input-border: #D8CBBA;
-  --color-input-border-focus: var(--color-gold);
+  --color-input-border-focus: var(--color-accent);
   --color-text-primary: #2B1B0F;
   --color-text-muted: #8A7862;
-  --color-gold: #6B4226;
+  --color-accent: #6B4226;
   --color-button-text: #ffffff;
-  --color-label: #A9702E;
+  --color-label: #6B4226;
   --color-error: #E53E3E;
 
   /* Spacing scale */
@@ -63,7 +63,7 @@ h1, h2, h3, .wordmark {
 }
 
 a {
-  color: var(--color-gold);
+  color: var(--color-accent);
 }
 
 /* Labels */
@@ -124,7 +124,7 @@ textarea:focus {
 /* Buttons */
 .btn-primary {
   display: inline-block;
-  background: var(--color-gold);
+  background: var(--color-accent);
   color: var(--color-button-text);
   border: none;
   border-radius: 4px;
@@ -217,7 +217,7 @@ textarea:focus {
 }
 
 .nav-item.active {
-  color: var(--color-gold);
+  color: var(--color-accent);
   background: var(--color-surface);
 }
 
@@ -261,8 +261,8 @@ textarea:focus {
 
 .chip.active {
   color: var(--color-button-text);
-  background: var(--color-gold);
-  border-color: var(--color-gold);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 /* Removable destination chips (new-itinerary form) */
@@ -319,7 +319,7 @@ textarea:focus {
 }
 
 .itinerary-row:hover {
-  border-color: var(--color-gold);
+  border-color: var(--color-accent);
 }
 
 .itinerary-row-title {
@@ -351,8 +351,8 @@ textarea:focus {
 }
 
 .itinerary-row-new:hover {
-  color: var(--color-gold);
-  border-color: var(--color-gold);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 /* Standalone itinerary detail / share page (no sidebar shell) */
