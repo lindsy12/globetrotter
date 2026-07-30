@@ -57,6 +57,7 @@
   });
 
   let activeTag = null;
+  let searchDebounceTimer = null;
 
   function renderDestinations(destinations) {
     const grid = document.getElementById('destination-grid');
@@ -112,11 +113,16 @@
   document.getElementById('search').addEventListener('input', () => {
     activeTag = null;
     document.querySelectorAll('#tag-chips .chip').forEach((c) => c.classList.remove('active'));
-    loadDestinations();
+
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(loadDestinations, 300);
   });
 
   document.getElementById('search').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') loadDestinations();
+    if (e.key === 'Enter') {
+      clearTimeout(searchDebounceTimer);
+      loadDestinations();
+    }
   });
 
   const initialQuery = new URLSearchParams(window.location.search).get('q');
