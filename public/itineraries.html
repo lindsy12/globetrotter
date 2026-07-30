@@ -23,10 +23,11 @@
   <main class="content">
     <div class="content-header">
       <h1>Itineraries</h1>
-      <p class="subtext">Your saved trips will appear here.</p>
+      <p class="subtext">Your saved trips.</p>
     </div>
-    <div class="card" style="padding: var(--space-6);">
-      <p class="subtext">Itinerary planning is coming soon.</p>
+
+    <div class="itinerary-list" id="itinerary-list">
+      <p class="subtext">Loading itineraries…</p>
     </div>
   </main>
 </div>
@@ -39,6 +40,57 @@
     e.preventDefault();
     logout();
   });
+
+  function formatDateRange(it) {
+    if (!it.start_date && !it.end_date) return null;
+    return `${it.start_date || '?'} – ${it.end_date || '?'}`;
+  }
+
+  function renderItineraries(itineraries) {
+    const container = document.getElementById('itinerary-list');
+    container.innerHTML = '';
+
+    itineraries.forEach((it) => {
+      const row = document.createElement('a');
+      row.className = 'itinerary-row';
+      row.href = `/itinerary.html?id=${encodeURIComponent(it.id)}`;
+
+      const title = document.createElement('div');
+      title.className = 'itinerary-row-title';
+      title.textContent = it.title;
+
+      const destCount = Array.isArray(it.destinations) ? it.destinations.length : 0;
+      const dateRange = formatDateRange(it);
+
+      const meta = document.createElement('div');
+      meta.className = 'itinerary-row-meta';
+      meta.textContent = dateRange
+        ? `${dateRange} · ${destCount} destination${destCount === 1 ? '' : 's'}`
+        : `${destCount} destination${destCount === 1 ? '' : 's'}`;
+
+      row.appendChild(title);
+      row.appendChild(meta);
+      container.appendChild(row);
+    });
+
+    const newRow = document.createElement('a');
+    newRow.className = 'itinerary-row-new';
+    newRow.href = '/new-itinerary.html';
+    newRow.textContent = '+ New Itinerary';
+    container.appendChild(newRow);
+  }
+
+  async function loadItineraries() {
+    const container = document.getElementById('itinerary-list');
+    try {
+      const data = await apiFetch('/itineraries');
+      renderItineraries(data);
+    } catch (err) {
+      container.innerHTML = `<p class="error-text visible">${err.message}</p>`;
+    }
+  }
+
+  loadItineraries();
 </script>
 </body>
 </html>
