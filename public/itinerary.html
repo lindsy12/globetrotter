@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Itinerary — GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="doc-page" id="doc-page">
+  <p class="subtext">Loading itinerary…</p>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+  function formatDateRange(it) {
+    if (!it.start_date && !it.end_date) return 'Dates not set';
+    return `${it.start_date || '?'} – ${it.end_date || '?'}`;
+  }
+
+  function renderNotFound(message) {
+    document.getElementById('doc-page').innerHTML =
+      `<p class="error-text visible">${message}</p>`;
+  }
+
+  function renderItinerary(itinerary, allDestinations) {
+    const destinationCount = Array.isArray(itinerary.destinations) ? itinerary.destinations.length : 0;
+    const byName = new Map(allDestinations.map((d) => [d.name, d]));
+
+    // Built via createElement/textContent below rather than innerHTML: title and
+    // notes are raw user-submitted text, and this page is intentionally public
+    // (share links), so they must never be interpreted as HTML.
+    const page = document.getElementById('doc-page');
+    page.innerHTML = `
+      <header class="doc-header">
+        <div>
+          <h1 class="doc-title" id="itinerary-title"></h1>
+          <p class="subtext" id="itinerary-count"></p>
+        </div>
+        <div class="doc-dates" id="itinerary-dates"></div>
+      </header>
+
+      <section class="doc-section">
+        <div class="doc-band">📍 Destinations</div>
+        <div class="doc-list" id="destination-list"></div>
+      </section>
+
+      <section class="doc-section">
+        <div class="doc-band">📝 Notes</div>
+        <div class="doc-notes" id="notes-text"></div>
+      </section>
+    `;
+
+    document.getElementById('itinerary-title').textContent = itinerary.title || '';
+    document.getElementById('itinerary-count').textContent =
+      `${destinationCount} destination${destinationCount === 1 ? '' : 's'}`;
+    document.getElementById('itinerary-dates').textContent = formatDateRange(itinerary);
+
+    const notesEl = document.getElementById('notes-text');
+    if (itinerary.notes) {
+      notesEl.textContent = itinerary.notes;
+    } else {
+      notesEl.textContent = 'No notes added.';
+      notesEl.classList.add('empty');
+    }
+
+    const list = document.getElementById('destination-list');
+    (itinerary.destinations || []).forEach((name) => {
+      const match = byName.get(name);
+
+      const row = document.createElement('div');
+      row.className = 'doc-list-row';
+
+      const info = document.createElement('div');
+      const nameEl = document.createElement('div');
+      nameEl.className = 'name';
+      nameEl.textContent = name;
+      info.appendChild(nameEl);
+
+      if (match && match.neighborhood) {
+        const neighborhoodEl = document.createElement('div');
+        neighborhoodEl.className = 'neighborhood';
+        neighborhoodEl.textContent = match.neighborhood;
+        info.appendChild(neighborhoodEl);
+      }
+
+      row.appendChild(info);
+
+      if (match && typeof match.latitude === 'number' && typeof match.longitude === 'number') {
+        const pinBtn = document.createElement('button');
+        pinBtn.type = 'button';
+        pinBtn.className = 'pin-btn';
+        pinBtn.setAttribute('aria-label', `View ${name} on map`);
+        pinBtn.textContent = '📍';
+        pinBtn.addEventListener('click', () => openGoogleMaps(match.latitude, match.longitude));
+        row.appendChild(pinBtn);
+      }
+
+      list.appendChild(row);
+    });
+  }
+
+  async function loadItinerary() {
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) {
+      renderNotFound('No itinerary id was given.');
+      return;
+    }
+
+    try {
+      const itinerary = await apiFetch(`/itineraries/${encodeURIComponent(id)}`);
+      const allDestinations = await apiFetch('/destinations');
+      renderItinerary(itinerary, allDestinations);
+    } catch (err) {
+      renderNotFound(err.message);
+    }
+  }
+
+  loadItinerary();
+</script>
+</body>
+</html>
