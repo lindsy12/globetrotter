@@ -1,0 +1,145 @@
+[
+  {
+    "id": "dest-001",
+    "name": "Hilton Yaoundé",
+    "neighborhood": "Centre-ville",
+    "description": "A large international hotel centrally located near government offices and diplomatic missions, with gourmet dining and conference facilities.",
+    "tags": ["hotel", "city", "luxury"],
+    "community_verified": false,
+    "popularity": 90,
+    "latitude": 3.8480,
+    "longitude": 11.5021
+  },
+  {
+    "id": "dest-002",
+    "name": "Hôtel Mont Fébé",
+    "neighborhood": "Mont Fébé",
+    "description": "A mid-range hotel set atop Mont Fébé, offering panoramic views of the city, a pool, and a restaurant serving local and international dishes.",
+    "tags": ["hotel", "nature", "views"],
+    "community_verified": false,
+    "popularity": 70,
+    "latitude": 3.9020,
+    "longitude": 11.5185
+  },
+  {
+    "id": "dest-003",
+    "name": "Hotel Franco",
+    "neighborhood": "Centre-ville",
+    "description": "An affordable hotel offering clean, comfortable rooms within walking distance of the city's major attractions.",
+    "tags": ["hotel", "budget-friendly"],
+    "community_verified": true,
+    "popularity": 50,
+    "latitude": 3.8475,
+    "longitude": 11.5030
+  },
+  {
+    "id": "dest-004",
+    "name": "Musée National du Cameroun",
+    "neighborhood": "Centre-ville",
+    "description": "Cameroon's most comprehensive museum, housed in the former presidential palace, covering the country's history and cultures through artifacts, clothing, and art.",
+    "tags": ["museum", "culture", "history"],
+    "community_verified": true,
+    "popularity": 85,
+    "latitude": 3.8660,
+    "longitude": 11.5140
+  },
+  {
+    "id": "dest-005",
+    "name": "Musée Benedictin de Mont-Fébé",
+    "neighborhood": "Mont Fébé",
+    "description": "A small museum known for unique wood carvings and panoramic views over the city, run by the Benedictine community.",
+    "tags": ["museum", "culture", "art"],
+    "community_verified": true,
+    "popularity": 60,
+    "latitude": 3.9015,
+    "longitude": 11.5190
+  },
+  {
+    "id": "dest-006",
+    "name": "Blackitude Museum",
+    "neighborhood": "Centre-ville",
+    "description": "A museum with an impressive collection of tribal masks and artifacts spanning Cameroon's many ethnic groups. Location approximate — confirm before relying on this one.",
+    "tags": ["museum", "culture", "art"],
+    "community_verified": false,
+    "popularity": 55,
+    "latitude": 3.8600,
+    "longitude": 11.5100
+  },
+  {
+    "id": "dest-007",
+    "name": "Marché Mokolo",
+    "neighborhood": "Mokolo",
+    "description": "One of the city's largest and most vibrant markets — a sensory experience of sights, sounds, and local goods.",
+    "tags": ["market", "shopping", "food"],
+    "community_verified": true,
+    "popularity": 80,
+    "latitude": 3.8660,
+    "longitude": 11.5060
+  },
+  {
+    "id": "dest-008",
+    "name": "Marché Central",
+    "neighborhood": "Centre-ville",
+    "description": "Yaoundé's central market, a good spot for last-minute souvenir shopping and local crafts.",
+    "tags": ["market", "shopping", "culture"],
+    "community_verified": true,
+    "popularity": 75,
+    "latitude": 3.8665,
+    "longitude": 11.5155
+  },
+  {
+    "id": "dest-009",
+    "name": "PlaYce Yaoundé",
+    "neighborhood": "Warda",
+    "description": "A large shopping and entertainment center with a Carrefour hypermarket, dozens of stores, restaurants, and family activities.",
+    "tags": ["mall", "shopping", "food"],
+    "community_verified": false,
+    "popularity": 85,
+    "latitude": 3.8710,
+    "longitude": 11.5160
+  },
+  {
+    "id": "dest-010",
+    "name": "Star Mall",
+    "neighborhood": "Bastos",
+    "description": "A three-level shopping center on Nouvelle Route Bastos with a mix of local and international stores.",
+    "tags": ["mall", "shopping"],
+    "community_verified": false,
+    "popularity": 60,
+    "latitude": 3.8930,
+    "longitude": 11.5210
+  },
+  {
+    "id": "dest-011",
+    "name": "Dovv Bastos Supermarket",
+    "neighborhood": "Bastos",
+    "description": "A well-known local supermarket chain outlet serving the Bastos neighborhood.",
+    "tags": ["supermarket", "shopping"],
+    "community_verified": true,
+    "popularity": 55,
+    "latitude": 3.8897,
+    "longitude": 11.5178
+  },
+  {
+    "id": "dest-012",
+    "name": "Le Tamarin",
+    "neighborhood": "Centre-ville",
+    "description": "A well-regarded restaurant serving Cameroonian and African cuisine.",
+    "tags": ["restaurant", "food", "culture"],
+    "community_verified": true,
+    "popularity": 65,
+    "latitude": 3.8650,
+    "longitude": 11.5145
+  },
+  {
+    "id": "dest-013",
+    "name": "Pizzeria Glacier Grill Dolcezza",
+    "neighborhood": "Centre-ville",
+    "description": "A popular pizza spot in the city center, known for a relaxed atmosphere and consistent quality.",
+    "tags": ["restaurant", "food"],
+    "community_verified": false,
+    "popularity": 68,
+    "latitude": 3.8640,
+    "longitude": 11.5135
+  }
+]
