@@ -22,7 +22,7 @@
 
   <main class="content">
     <div class="content-header">
-      <h1>New Itinerary</h1>
+      <h1 id="page-heading">New Itinerary</h1>
       <p class="subtext">Plan out where you're headed next.</p>
     </div>
 
@@ -59,7 +59,7 @@
         </div>
 
         <p id="form-error" class="error-text"></p>
-        <button type="submit" class="btn-primary btn-block">Save Itinerary</button>
+        <button type="submit" id="submit-btn" class="btn-primary btn-block">Save Itinerary</button>
       </form>
     </div>
   </main>
@@ -125,11 +125,38 @@
     }
   });
 
-  const prefillDestination = new URLSearchParams(window.location.search).get('destination');
-  if (prefillDestination) {
-    destinations.push(prefillDestination);
+  const editId = new URLSearchParams(window.location.search).get('edit');
+
+  async function loadForEdit() {
+    document.getElementById('page-heading').textContent = 'Edit Itinerary';
+    document.getElementById('submit-btn').textContent = 'Save Changes';
+
+    try {
+      const itinerary = await apiFetch(`/itineraries/${encodeURIComponent(editId)}`);
+
+      document.getElementById('title').value = itinerary.title || '';
+      document.getElementById('start-date').value = itinerary.start_date || '';
+      document.getElementById('end-date').value = itinerary.end_date || '';
+      document.getElementById('notes').value = itinerary.notes || '';
+
+      destinations.length = 0;
+      (itinerary.destinations || []).forEach((name) => destinations.push(name));
+      renderChips();
+    } catch (err) {
+      document.getElementById('form-error').textContent = err.message;
+      document.getElementById('form-error').classList.add('visible');
+    }
   }
-  renderChips();
+
+  if (editId) {
+    loadForEdit();
+  } else {
+    const prefillDestination = new URLSearchParams(window.location.search).get('destination');
+    if (prefillDestination) {
+      destinations.push(prefillDestination);
+    }
+    renderChips();
+  }
 
   document.getElementById('itinerary-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -152,17 +179,20 @@
       return;
     }
 
+    const body = JSON.stringify({
+      title,
+      destinations,
+      notes,
+      start_date: startDate,
+      end_date: endDate,
+    });
+
     try {
-      await apiFetch('/itineraries', {
-        method: 'POST',
-        body: JSON.stringify({
-          title,
-          destinations,
-          notes,
-          start_date: startDate,
-          end_date: endDate,
-        }),
-      });
+      if (editId) {
+        await apiFetch(`/itineraries/${encodeURIComponent(editId)}`, { method: 'PUT', body });
+      } else {
+        await apiFetch('/itineraries', { method: 'POST', body });
+      }
       window.location.href = '/itineraries.html';
     } catch (err) {
       errorEl.textContent = err.message;

@@ -39,7 +39,10 @@
           <h1 class="doc-title" id="itinerary-title"></h1>
           <p class="subtext" id="itinerary-count"></p>
         </div>
-        <div class="doc-dates" id="itinerary-dates"></div>
+        <div class="doc-header-right">
+          <div class="doc-dates" id="itinerary-dates"></div>
+          <button type="button" id="share-btn" class="btn-primary btn-small">Copy share link</button>
+        </div>
       </header>
 
       <section class="doc-section">
@@ -57,6 +60,19 @@
     document.getElementById('itinerary-count').textContent =
       `${destinationCount} destination${destinationCount === 1 ? '' : 's'}`;
     document.getElementById('itinerary-dates').textContent = formatDateRange(itinerary);
+
+    document.getElementById('share-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('share-btn');
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.textContent = 'Copy share link';
+        }, 1500);
+      } catch (err) {
+        alert('Could not copy link: ' + err.message);
+      }
+    });
 
     const notesEl = document.getElementById('notes-text');
     if (itinerary.notes) {

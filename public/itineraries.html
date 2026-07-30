@@ -55,6 +55,9 @@
       row.className = 'itinerary-row';
       row.href = `/itinerary.html?id=${encodeURIComponent(it.id)}`;
 
+      const info = document.createElement('div');
+      info.className = 'itinerary-row-info';
+
       const title = document.createElement('div');
       title.className = 'itinerary-row-title';
       title.textContent = it.title;
@@ -68,8 +71,47 @@
         ? `${dateRange} · ${destCount} destination${destCount === 1 ? '' : 's'}`
         : `${destCount} destination${destCount === 1 ? '' : 's'}`;
 
-      row.appendChild(title);
-      row.appendChild(meta);
+      info.appendChild(title);
+      info.appendChild(meta);
+
+      const actions = document.createElement('div');
+      actions.className = 'itinerary-row-actions';
+
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'icon-btn';
+      editBtn.setAttribute('aria-label', 'Edit itinerary');
+      editBtn.textContent = '✎';
+      editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = `/new-itinerary.html?edit=${encodeURIComponent(it.id)}`;
+      });
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.type = 'button';
+      deleteBtn.className = 'icon-btn';
+      deleteBtn.setAttribute('aria-label', 'Delete itinerary');
+      deleteBtn.textContent = '🗑';
+      deleteBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!confirm('Delete this itinerary?')) return;
+
+        try {
+          await apiFetch(`/itineraries/${encodeURIComponent(it.id)}`, { method: 'DELETE' });
+          loadItineraries();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+
+      actions.appendChild(editBtn);
+      actions.appendChild(deleteBtn);
+
+      row.appendChild(info);
+      row.appendChild(actions);
       container.appendChild(row);
     });
 

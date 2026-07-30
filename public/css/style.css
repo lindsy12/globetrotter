@@ -310,12 +310,41 @@ textarea:focus {
 }
 
 .itinerary-row {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: var(--space-5);
   text-decoration: none;
+}
+
+.itinerary-row-info {
+  min-width: 0;
+}
+
+.itinerary-row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  color: var(--color-accent);
 }
 
 .itinerary-row:hover {
@@ -374,6 +403,13 @@ textarea:focus {
 .doc-title {
   font-size: 32px;
   margin-bottom: var(--space-2);
+}
+
+.doc-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
 }
 
 .doc-dates {
