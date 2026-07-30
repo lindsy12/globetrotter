@@ -569,9 +569,6 @@ textarea:focus {
 }
 
 .badge {
-  position: absolute;
-  top: var(--space-3);
-  left: var(--space-3);
   font-family: var(--font-body);
   font-size: 10px;
   font-weight: 600;
@@ -581,14 +578,20 @@ textarea:focus {
   border-radius: 999px;
 }
 
-.badge.verified {
-  background: rgba(120, 190, 130, 0.3);
-  color: #E8F7EA;
-}
-
 .badge.popular {
+  position: absolute;
+  top: 10px;
+  left: 10px;
   background: rgba(90, 150, 220, 0.3);
   color: #EAF3FF;
+}
+
+.badge.verified {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(120, 190, 130, 0.3);
+  color: #E8F7EA;
 }
 
 /* Auth split layout (login / register) */
