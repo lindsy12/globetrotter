@@ -45,23 +45,86 @@ function logout() {
 }
 
 /**
- * Maps the real destination fields (locally_owned_score, community_verified,
- * est_footprint) to the one photo-overlay badge to show, if any.
+ * Returns the photo-overlay tags for a destination. Unlike the old
+ * single-badge system, these don't compete for one slot — a destination
+ * can have zero, one, or both.
  */
-function getBadgeInfo(dest) {
-  const footprint = String(dest.est_footprint || '').toLowerCase();
-
-  if (footprint === 'high') {
-    return { type: 'high-impact', label: 'High Impact' };
-  }
+function getDestinationTags(dest) {
+  const tags = [];
   if (dest.community_verified === true) {
-    return { type: 'eco', label: 'Community Verified' };
+    tags.push({ type: 'verified', label: 'Verified' });
   }
-  if (typeof dest.locally_owned_score === 'number' && dest.locally_owned_score >= 0.6) {
-    return { type: 'eco', label: 'Locally Owned' };
+  if (typeof dest.popularity === 'number' && dest.popularity > 70) {
+    tags.push({ type: 'popular', label: 'Popular' });
   }
-  if (footprint === 'low') {
-    return { type: 'eco', label: 'Low Impact' };
+  return tags;
+}
+
+/**
+ * Builds a destination card element, wired up with its own map-pin and
+ * three-dot-menu click handlers. Shared by index.html and destinations.html
+ * so those event handlers only exist in one place.
+ */
+function createDestinationCard(dest) {
+  const card = document.createElement('div');
+  card.className = 'destination-card';
+
+  const badgeHtml = getDestinationTags(dest)
+    .map((tag) => `<span class="badge ${tag.type}">${tag.label}</span>`)
+    .join('');
+
+  const location = dest.neighborhood || dest.country || dest.continent || '';
+  const hasCoords = typeof dest.latitude === 'number' && typeof dest.longitude === 'number';
+
+  card.innerHTML = `
+    ${badgeHtml}
+    <div class="overlay">
+      <div class="overlay-main">
+        <div class="name">${dest.name || ''}</div>
+        <div class="location-row">
+          <span class="country">${location}</span>
+          ${hasCoords ? '<button type="button" class="pin-btn" aria-label="View on map">📍</button>' : ''}
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <button type="button" class="dots-btn" aria-label="More options">⋮</button>
+        <div class="dots-menu hidden">
+          <button type="button" class="dots-menu-item">Add to itinerary</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const pinBtn = card.querySelector('.pin-btn');
+  if (pinBtn) {
+    pinBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openGoogleMaps(dest.latitude, dest.longitude);
+    });
   }
-  return null;
+
+  const dotsBtn = card.querySelector('.dots-btn');
+  const dotsMenu = card.querySelector('.dots-menu');
+  dotsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.querySelectorAll('.dots-menu').forEach((menu) => {
+      if (menu !== dotsMenu) menu.classList.add('hidden');
+    });
+    dotsMenu.classList.toggle('hidden');
+  });
+
+  card.querySelector('.dots-menu-item').addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.location.href = `/new-itinerary.html?destination=${encodeURIComponent(dest.name || '')}`;
+  });
+
+  return card;
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.dots-menu').forEach((menu) => menu.classList.add('hidden'));
+});
+
+function openGoogleMaps(lat, lng) {
+  window.open(`https://maps.google.com/?q=${lat},${lng}`, '_blank', 'noopener');
 }
