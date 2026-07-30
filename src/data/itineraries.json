@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": "14845911-05f7-43ec-ae9c-aef19fabca95",
+    "username": "lindsy",
+    "title": "birthday outing",
+    "destinations": [
+      "hotel franco"
+    ],
+    "notes": "defucnuehfiguhfundiwjdfuvb chuwshvbj jnkajxsoa",
+    "start_date": "2026-09-12",
+    "end_date": "2026-09-14"
+  },
+  {
+    "id": "120e9a9b-a852-4302-9bf2-738fe2d5baae",
+    "username": "lindsy",
+    "title": "family outing",
+    "destinations": [
+      "hilton",
+      "hilton",
+      "mokolo"
+    ],
+    "notes": "bfybcnwxcvgjndiehfubv c",
+    "start_date": "2026-08-01",
+    "end_date": "2026-08-01"
+  }
+]

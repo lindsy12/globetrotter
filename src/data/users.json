@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "cecb08fa-6d7e-4548-88d5-c73fe4d3bac2",
+    "username": "lindsy",
+    "password_hash": "$2a$10$9uLZjmiO8iOoVpUr1N28se/ocWqwLjEtSbdbGFldmU6OHhc84oVga",
+    "preferences": [
+      "food"
+    ]
+  }
+]
