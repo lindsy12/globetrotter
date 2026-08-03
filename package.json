@@ -4,7 +4,8 @@
   "description": "GlobeTrotter travel planning app (Node/Express)",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
@@ -14,5 +15,9 @@
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }

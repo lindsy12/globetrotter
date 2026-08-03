@@ -45,6 +45,28 @@ function logout() {
 }
 
 /**
+ * Reads the username out of the current JWT's payload (the "sub" claim
+ * already set by src/auth.js) without a network round-trip or any new
+ * stored data — just decoding the token we already have.
+ */
+function getUsernameFromToken() {
+  const token = getToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    return payload.sub || null;
+  } catch (err) {
+    return null;
+  }
+}
+
+/** Fills a topnav avatar element with the logged-in user's first initial. */
+function renderAvatarInitial(el) {
+  const username = getUsernameFromToken();
+  el.textContent = username ? username.charAt(0).toUpperCase() : '?';
+}
+
+/**
  * Returns the photo-overlay tags for a destination. Unlike the old
  * single-badge system, these don't compete for one slot — a destination
  * can have zero, one, or both.
@@ -61,9 +83,9 @@ function getDestinationTags(dest) {
 }
 
 /**
- * Builds a destination card element, wired up with its own map-pin and
- * three-dot-menu click handlers. Shared by index.html and destinations.html
- * so those event handlers only exist in one place.
+ * Builds a destination card element (photo panel + body panel), wired up
+ * with an "Add to Trip" button. Shared by index.html and destinations.html
+ * so this markup and its click handler only exist in one place.
  */
 function createDestinationCard(dest) {
   const card = document.createElement('div');
@@ -75,45 +97,36 @@ function createDestinationCard(dest) {
 
   const location = dest.neighborhood || dest.country || dest.continent || '';
   const hasCoords = typeof dest.latitude === 'number' && typeof dest.longitude === 'number';
+  const hasImage = typeof dest.image === 'string' && dest.image.trim() !== '';
 
   card.innerHTML = `
-    ${badgeHtml}
-    <div class="overlay">
-      <div class="overlay-main">
-        <div class="name">${dest.name || ''}</div>
-        <div class="location-row">
-          <span class="country">${location}</span>
-          ${hasCoords ? '<button type="button" class="pin-btn" aria-label="View on map">📍</button>' : ''}
-        </div>
+    <div class="destination-card-photo">
+      ${hasImage ? `<img class="destination-card-img" src="${dest.image}" alt="${dest.name || ''}">` : ''}
+      ${badgeHtml}
+    </div>
+    <div class="destination-card-body">
+      <div class="name">${dest.name || ''}</div>
+      <div class="location-row">
+        <span class="country">${location}</span>
+        ${hasCoords ? '<button type="button" class="pin-btn" aria-label="View on map">📍</button>' : ''}
       </div>
-      <div class="menu-wrap">
-        <button type="button" class="dots-btn" aria-label="More options">⋮</button>
-        <div class="dots-menu hidden">
-          <button type="button" class="dots-menu-item">Add to itinerary</button>
-        </div>
-      </div>
+      <button type="button" class="add-to-trip-btn">+ Add to Trip</button>
     </div>
   `;
+
+  card.addEventListener('click', () => {
+    window.location.href = `/destination.html?id=${encodeURIComponent(dest.id || '')}`;
+  });
 
   const pinBtn = card.querySelector('.pin-btn');
   if (pinBtn) {
     pinBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      openGoogleMaps(dest.latitude, dest.longitude);
+      openMapModal(dest.latitude, dest.longitude);
     });
   }
 
-  const dotsBtn = card.querySelector('.dots-btn');
-  const dotsMenu = card.querySelector('.dots-menu');
-  dotsBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.dots-menu').forEach((menu) => {
-      if (menu !== dotsMenu) menu.classList.add('hidden');
-    });
-    dotsMenu.classList.toggle('hidden');
-  });
-
-  card.querySelector('.dots-menu-item').addEventListener('click', (e) => {
+  card.querySelector('.add-to-trip-btn').addEventListener('click', (e) => {
     e.stopPropagation();
     window.location.href = `/new-itinerary.html?destination=${encodeURIComponent(dest.name || '')}`;
   });
@@ -121,10 +134,55 @@ function createDestinationCard(dest) {
   return card;
 }
 
-document.addEventListener('click', () => {
-  document.querySelectorAll('.dots-menu').forEach((menu) => menu.classList.add('hidden'));
-});
-
 function openGoogleMaps(lat, lng) {
   window.open(`https://maps.google.com/?q=${lat},${lng}`, '_blank', 'noopener');
+}
+
+function handleMapModalEscape(e) {
+  if (e.key === 'Escape') closeMapModal();
+}
+
+function closeMapModal() {
+  const existing = document.getElementById('map-modal-overlay');
+  if (existing) existing.remove();
+  document.removeEventListener('keydown', handleMapModalEscape);
+}
+
+/**
+ * Shows a small in-page overlay with an embedded Google Maps iframe for the
+ * given coordinates, using the no-API-key "output=embed" endpoint. Built
+ * dynamically so any page can call it just by loading api.js.
+ */
+function openMapModal(lat, lng) {
+  closeMapModal();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'map-modal-overlay';
+  overlay.id = 'map-modal-overlay';
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeMapModal();
+  });
+
+  const modal = document.createElement('div');
+  modal.className = 'map-modal';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'map-modal-close';
+  closeBtn.setAttribute('aria-label', 'Close map');
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', closeMapModal);
+
+  const iframe = document.createElement('iframe');
+  iframe.className = 'map-modal-iframe';
+  iframe.src = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+  iframe.loading = 'lazy';
+  iframe.title = 'Map';
+
+  modal.appendChild(closeBtn);
+  modal.appendChild(iframe);
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  document.addEventListener('keydown', handleMapModalEscape);
 }

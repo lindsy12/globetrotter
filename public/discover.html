@@ -9,12 +9,19 @@
 </head>
 <body>
 
-<section class="hero">
-  <nav class="hero-nav">
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </nav>
+<nav class="topnav">
+  <div class="wordmark">GlobeTrotter</div>
+  <ul class="topnav-links">
+    <li><a class="topnav-link active" href="/discover.html">Discover</a></li>
+    <li><a class="topnav-link" href="#about">About</a></li>
+    <li><a class="topnav-link" href="#contact">Contact</a></li>
+  </ul>
+  <div class="topnav-right">
+    <a href="/login.html" class="btn-primary btn-small">Sign In</a>
+  </div>
+</nav>
 
+<section class="hero">
   <div class="hero-wordmark">GLOBETROTTER</div>
 
   <h1 class="hero-headline"><span id="typed-text"></span><span class="hero-cursor"></span></h1>
@@ -26,20 +33,65 @@
   </div>
 
   <div class="hero-actions">
-    <a href="/login.html" class="btn-primary">Log In</a>
+    <div class="hero-cta-row">
+      <a href="/login.html" class="btn-primary">Log In</a>
+      <a href="#about" class="btn-outline">Learn More</a>
+    </div>
     <p class="secondary-link">New here? <a href="/register.html">Create new account</a></p>
   </div>
 </section>
 
 <section id="about" class="content-section">
   <h2>About GlobeTrotter</h2>
-  <p>This section is still being written — check back soon.</p>
+  <p>GlobeTrotter began as a simple idea: what if exploring Yaoundé felt less like scrolling through a directory, and more like getting a recommendation from someone who actually knows the city?</p>
+  <p>We're building a travel companion rooted in this place — surfacing destinations genuinely worth your time, with an honest eye toward who benefits from your visit and how the city is treated in return. Every recommendation reflects real neighborhoods and real local knowledge, not generic listings.</p>
+  <p>GlobeTrotter is a growing project, built one honest feature at a time.</p>
 </section>
 
 <section id="contact" class="content-section">
   <h2>Contact</h2>
-  <p>This section is still being written — check back soon.</p>
+  <p>Have a question, a place to suggest, or feedback on GlobeTrotter? Reach out directly.</p>
+  <div class="contact-info">
+    <div class="contact-row">
+      <span class="contact-icon">📞</span>
+      <span>+237 680 065 719</span>
+    </div>
+    <div class="contact-row">
+      <span class="contact-icon">✉️</span>
+      <span>lindsy339@gmail.com</span>
+    </div>
+  </div>
 </section>
+
+<footer class="site-footer">
+  <div class="footer-brand">
+    <div class="wordmark">GlobeTrotter</div>
+    <p class="footer-tagline">Explore Yaoundé thoughtfully.</p>
+  </div>
+
+  <div class="footer-links">
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#">Roadmap</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-social">
+    <a href="#">Facebook</a>
+    <a href="#">Instagram</a>
+    <a href="#">Twitter</a>
+  </div>
+</footer>
 
 <script>
   const headline = 'discover Yaoundé, thoughtfully.';

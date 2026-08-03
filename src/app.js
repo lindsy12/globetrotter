@@ -43,6 +43,14 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`GlobeTrotter monolith running on http://localhost:${PORT}`);
-});
+
+// Only bind a port when this file is run directly (node src/app.js) —
+// not when a test file requires the app to hand it to Supertest, which
+// binds its own ephemeral port per test run instead.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`GlobeTrotter monolith running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

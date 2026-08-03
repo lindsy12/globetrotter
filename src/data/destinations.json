@@ -4,131 +4,187 @@
     "name": "Hilton Yaoundé",
     "neighborhood": "Centre-ville",
     "description": "A large international hotel centrally located near government offices and diplomatic missions, with gourmet dining and conference facilities.",
-    "tags": ["hotel", "city", "luxury"],
-    "community_verified": false,
+    "tags": [
+      "hotel",
+      "city",
+      "luxury"
+    ],
+    "community_verified": true,
     "popularity": 90,
-    "latitude": 3.8480,
-    "longitude": 11.5021
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "image": "/images/destinations/dest-001.jpg"
   },
   {
     "id": "dest-002",
     "name": "Hôtel Mont Fébé",
     "neighborhood": "Mont Fébé",
     "description": "A mid-range hotel set atop Mont Fébé, offering panoramic views of the city, a pool, and a restaurant serving local and international dishes.",
-    "tags": ["hotel", "nature", "views"],
+    "tags": [
+      "hotel",
+      "nature",
+      "views"
+    ],
     "community_verified": false,
     "popularity": 70,
-    "latitude": 3.9020,
-    "longitude": 11.5185
+    "latitude": 3.902,
+    "longitude": 11.5185,
+    "image": "/images/destinations/dest-002.jpg"
   },
   {
     "id": "dest-003",
     "name": "Hotel Franco",
     "neighborhood": "Centre-ville",
     "description": "An affordable hotel offering clean, comfortable rooms within walking distance of the city's major attractions.",
-    "tags": ["hotel", "budget-friendly"],
+    "tags": [
+      "hotel",
+      "budget-friendly"
+    ],
     "community_verified": true,
     "popularity": 50,
     "latitude": 3.8475,
-    "longitude": 11.5030
+    "longitude": 11.503,
+    "image": "/images/destinations/dest-003.jpg"
   },
   {
     "id": "dest-004",
     "name": "Musée National du Cameroun",
     "neighborhood": "Centre-ville",
     "description": "Cameroon's most comprehensive museum, housed in the former presidential palace, covering the country's history and cultures through artifacts, clothing, and art.",
-    "tags": ["museum", "culture", "history"],
+    "tags": [
+      "museum",
+      "culture",
+      "history"
+    ],
     "community_verified": true,
     "popularity": 85,
-    "latitude": 3.8660,
-    "longitude": 11.5140
+    "latitude": 3.866,
+    "longitude": 11.514,
+    "image": "/images/destinations/dest-004.jpg"
   },
   {
     "id": "dest-005",
     "name": "Musée Benedictin de Mont-Fébé",
     "neighborhood": "Mont Fébé",
     "description": "A small museum known for unique wood carvings and panoramic views over the city, run by the Benedictine community.",
-    "tags": ["museum", "culture", "art"],
-    "community_verified": true,
+    "tags": [
+      "museum",
+      "culture",
+      "art"
+    ],
+    "community_verified": false,
     "popularity": 60,
     "latitude": 3.9015,
-    "longitude": 11.5190
+    "longitude": 11.519,
+    "image": "/images/destinations/dest-005.jpg"
   },
   {
     "id": "dest-006",
     "name": "Blackitude Museum",
     "neighborhood": "Centre-ville",
     "description": "A museum with an impressive collection of tribal masks and artifacts spanning Cameroon's many ethnic groups. Location approximate — confirm before relying on this one.",
-    "tags": ["museum", "culture", "art"],
+    "tags": [
+      "museum",
+      "culture",
+      "art"
+    ],
     "community_verified": false,
     "popularity": 55,
-    "latitude": 3.8600,
-    "longitude": 11.5100
+    "latitude": 3.86,
+    "longitude": 11.51,
+    "image": "/images/destinations/dest-006.jpg"
   },
   {
     "id": "dest-007",
     "name": "Marché Mokolo",
     "neighborhood": "Mokolo",
     "description": "One of the city's largest and most vibrant markets — a sensory experience of sights, sounds, and local goods.",
-    "tags": ["market", "shopping", "food"],
+    "tags": [
+      "market",
+      "shopping",
+      "food"
+    ],
     "community_verified": true,
     "popularity": 80,
-    "latitude": 3.8660,
-    "longitude": 11.5060
+    "latitude": 3.866,
+    "longitude": 11.506,
+    "image": "/images/destinations/dest-007.jpg"
   },
   {
     "id": "dest-008",
     "name": "Marché Central",
     "neighborhood": "Centre-ville",
     "description": "Yaoundé's central market, a good spot for last-minute souvenir shopping and local crafts.",
-    "tags": ["market", "shopping", "culture"],
+    "tags": [
+      "market",
+      "shopping",
+      "culture"
+    ],
     "community_verified": true,
     "popularity": 75,
     "latitude": 3.8665,
-    "longitude": 11.5155
+    "longitude": 11.5155,
+    "image": "/images/destinations/dest-008.jpg"
   },
   {
     "id": "dest-009",
     "name": "PlaYce Yaoundé",
     "neighborhood": "Warda",
     "description": "A large shopping and entertainment center with a Carrefour hypermarket, dozens of stores, restaurants, and family activities.",
-    "tags": ["mall", "shopping", "food"],
-    "community_verified": false,
-    "popularity": 85,
-    "latitude": 3.8710,
-    "longitude": 11.5160
+    "tags": [
+      "mall",
+      "shopping",
+      "food"
+    ],
+    "community_verified": true,
+    "popularity": 95,
+    "latitude": 3.871,
+    "longitude": 11.516,
+    "image": "/images/destinations/dest-009.jpg"
   },
   {
     "id": "dest-010",
     "name": "Star Mall",
     "neighborhood": "Bastos",
     "description": "A three-level shopping center on Nouvelle Route Bastos with a mix of local and international stores.",
-    "tags": ["mall", "shopping"],
-    "community_verified": false,
-    "popularity": 60,
-    "latitude": 3.8930,
-    "longitude": 11.5210
+    "tags": [
+      "mall",
+      "shopping"
+    ],
+    "community_verified": true,
+    "popularity": 90,
+    "latitude": 3.893,
+    "longitude": 11.521,
+    "image": "/images/destinations/dest-010.jpg"
   },
   {
     "id": "dest-011",
     "name": "Dovv Bastos Supermarket",
     "neighborhood": "Bastos",
     "description": "A well-known local supermarket chain outlet serving the Bastos neighborhood.",
-    "tags": ["supermarket", "shopping"],
+    "tags": [
+      "supermarket",
+      "shopping"
+    ],
     "community_verified": true,
     "popularity": 55,
     "latitude": 3.8897,
-    "longitude": 11.5178
+    "longitude": 11.5178,
+    "image": "/images/destinations/dest-011.jpg"
   },
   {
     "id": "dest-012",
     "name": "Le Tamarin",
     "neighborhood": "Centre-ville",
     "description": "A well-regarded restaurant serving Cameroonian and African cuisine.",
-    "tags": ["restaurant", "food", "culture"],
-    "community_verified": true,
+    "tags": [
+      "restaurant",
+      "food",
+      "culture"
+    ],
+    "community_verified": false,
     "popularity": 65,
-    "latitude": 3.8650,
+    "latitude": 3.865,
     "longitude": 11.5145
   },
   {
@@ -136,10 +192,186 @@
     "name": "Pizzeria Glacier Grill Dolcezza",
     "neighborhood": "Centre-ville",
     "description": "A popular pizza spot in the city center, known for a relaxed atmosphere and consistent quality.",
-    "tags": ["restaurant", "food"],
+    "tags": [
+      "restaurant",
+      "food"
+    ],
     "community_verified": false,
     "popularity": 68,
-    "latitude": 3.8640,
-    "longitude": 11.5135
+    "latitude": 3.864,
+    "longitude": 11.5135,
+    "image": "/images/destinations/dest-013.jpg"
+  },
+  {
+    "id": "dest-014",
+    "name": "Mefou National Park",
+    "neighborhood": "Mefou (outskirts)",
+    "description": "A wildlife sanctuary and day-trip destination where visitors can observe rescued primates — chimpanzees, gorillas, and drills — in a semi-wild environment.",
+    "tags": [
+      "nature",
+      "wildlife",
+      "outdoor"
+    ],
+    "community_verified": true,
+    "popularity": 78,
+    "latitude": 3.65,
+    "longitude": 11.45
+  },
+  {
+    "id": "dest-015",
+    "name": "Mvog-Betsi Zoological & Botanical Garden",
+    "neighborhood": "Mvog-Betsi",
+    "description": "A family-friendly zoo and garden with native wildlife including lions and primates, plus shaded walking paths.",
+    "tags": [
+      "nature",
+      "wildlife",
+      "family"
+    ],
+    "community_verified": true,
+    "popularity": 65,
+    "latitude": 3.858,
+    "longitude": 11.499,
+    "image": "/images/destinations/dest-015.jpg"
+  },
+  {
+    "id": "dest-016",
+    "name": "Lac Municipal",
+    "neighborhood": "Centre-ville",
+    "description": "A tranquil municipal lake surrounded by a park, popular for walking, jogging, and relaxing by the water.",
+    "tags": [
+      "nature",
+      "outdoor"
+    ],
+    "community_verified": true,
+    "popularity": 60,
+    "latitude": 3.856,
+    "longitude": 11.508,
+    "image": "/images/destinations/dest-016.jpg"
+  },
+  {
+    "id": "dest-017",
+    "name": "Bois Sainte Anastasie",
+    "neighborhood": "Centre-ville",
+    "description": "A small, tranquil green space combining a park and restaurant, ideal for a quiet stroll away from the city's hustle.",
+    "tags": [
+      "nature",
+      "restaurant",
+      "outdoor"
+    ],
+    "community_verified": true,
+    "popularity": 58,
+    "latitude": 3.862,
+    "longitude": 11.507,
+    "image": "/images/destinations/dest-017.jpg"
+  },
+  {
+    "id": "dest-018",
+    "name": "Monument de la Réunification",
+    "neighborhood": "Centre-ville",
+    "description": "A landmark monument commemorating Cameroon's reunification, of real historical and architectural significance.",
+    "tags": [
+      "culture",
+      "history",
+      "monument"
+    ],
+    "community_verified": true,
+    "popularity": 72,
+    "latitude": 3.869,
+    "longitude": 11.5175,
+    "image": "/images/destinations/dest-018.jpg"
+  },
+  {
+    "id": "dest-019",
+    "name": "Basilique Marie Reine des Apôtres de Mvolyé",
+    "neighborhood": "Mvolyé",
+    "description": "One of Yaoundé's largest and most architecturally significant churches, sitting atop a hill with views over the city.",
+    "tags": [
+      "culture",
+      "religious",
+      "history"
+    ],
+    "community_verified": true,
+    "popularity": 68,
+    "latitude": 3.858,
+    "longitude": 11.516,
+    "image": "/images/destinations/dest-019.jpg"
+  },
+  {
+    "id": "dest-020",
+    "name": "Cathédrale Notre-Dame des Victoires",
+    "neighborhood": "Centre-ville",
+    "description": "Also known as the Cathedral of Peace, a landmark of religious and cultural heritage in the heart of the city.",
+    "tags": [
+      "culture",
+      "religious",
+      "history"
+    ],
+    "community_verified": true,
+    "popularity": 62,
+    "latitude": 3.867,
+    "longitude": 11.5165,
+    "image": "/images/destinations/dest-020.jpg"
+  },
+  {
+    "id": "dest-021",
+    "name": "Musée Ethnographique des Peuples de la Forêt",
+    "neighborhood": "Centre-ville",
+    "description": "A museum dedicated to the cultures of Central Africa's forest peoples.",
+    "tags": [
+      "museum",
+      "culture",
+      "history"
+    ],
+    "community_verified": true,
+    "popularity": 45,
+    "latitude": 3.8655,
+    "longitude": 11.512,
+    "image": "/images/destinations/dest-021.jpg"
+  },
+  {
+    "id": "dest-022",
+    "name": "Djeuga Palace Hotel",
+    "neighborhood": "Centre-ville",
+    "description": "An upscale hotel offering comfortable rooms, a restaurant, and event facilities in the city center.",
+    "tags": [
+      "hotel",
+      "luxury",
+      "city"
+    ],
+    "community_verified": true,
+    "popularity": 80,
+    "latitude": 3.863,
+    "longitude": 11.515,
+    "image": "/images/destinations/dest-022.jpg"
+  },
+  {
+    "id": "dest-023",
+    "name": "Hotel La Falaise",
+    "neighborhood": "Centre-ville",
+    "description": "A well-reviewed hotel known for a relaxed atmosphere and convenient central location.",
+    "tags": [
+      "hotel",
+      "city"
+    ],
+    "community_verified": false,
+    "popularity": 58,
+    "latitude": 3.861,
+    "longitude": 11.5115,
+    "image": "/images/destinations/dest-023.jpg"
+  },
+  {
+    "id": "dest-024",
+    "name": "Star Land Hotel Bastos",
+    "neighborhood": "Bastos",
+    "description": "A hotel in the Bastos neighborhood, popular among visitors staying near the diplomatic district.",
+    "tags": [
+      "hotel",
+      "city"
+    ],
+    "community_verified": true,
+    "popularity": 98,
+    "latitude": 3.891,
+    "longitude": 11.5195,
+    "image": "/images/destinations/dest-024.jpg"
   }
 ]

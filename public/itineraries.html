@@ -8,36 +8,37 @@
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="app-shell">
-  <nav class="sidebar">
-    <div class="wordmark">GlobeTrotter</div>
-    <ul class="nav-list">
-      <li><a class="nav-item" href="/index.html">Home</a></li>
-      <li><a class="nav-item" href="/destinations.html">Destinations</a></li>
-      <li><a class="nav-item active" href="/itineraries.html">Itineraries</a></li>
-      <li><a class="nav-item" href="/settings.html">Settings</a></li>
-      <li><a class="nav-item" href="#" id="logout-link">Log Out</a></li>
-    </ul>
-  </nav>
+<nav class="topnav">
+  <div class="wordmark">GlobeTrotter</div>
+  <ul class="topnav-links">
+    <li><a class="topnav-link" href="/discover.html">Discover</a></li>
+    <li><a class="topnav-link" href="/index.html">For You</a></li>
+    <li><a class="topnav-link" href="/destinations.html">Destinations</a></li>
+    <li><a class="topnav-link active" href="/itineraries.html">My Trips</a></li>
+  </ul>
+  <div class="topnav-right">
+    <a class="avatar" id="avatar" href="/settings.html" aria-label="Settings"></a>
+    <button type="button" class="topnav-logout" id="logout-link">Log Out</button>
+  </div>
+</nav>
 
-  <main class="content">
-    <div class="content-header">
-      <h1>Itineraries</h1>
-      <p class="subtext">Your saved trips.</p>
-    </div>
+<main class="content">
+  <div class="content-header">
+    <h1>Itineraries</h1>
+    <p class="subtext">Your saved trips.</p>
+  </div>
 
-    <div class="itinerary-list" id="itinerary-list">
-      <p class="subtext">Loading itineraries…</p>
-    </div>
-  </main>
-</div>
+  <div class="itinerary-list" id="itinerary-list">
+    <p class="subtext">Loading itineraries…</p>
+  </div>
+</main>
 
 <script src="/js/api.js"></script>
 <script>
   requireAuthOrRedirect();
+  renderAvatarInitial(document.getElementById('avatar'));
 
-  document.getElementById('logout-link').addEventListener('click', (e) => {
-    e.preventDefault();
+  document.getElementById('logout-link').addEventListener('click', () => {
     logout();
   });
 
@@ -54,6 +55,16 @@
       const row = document.createElement('a');
       row.className = 'itinerary-row';
       row.href = `/itinerary.html?id=${encodeURIComponent(it.id)}`;
+
+      const photo = document.createElement('div');
+      photo.className = 'itinerary-row-photo';
+      if (typeof it.image === 'string' && it.image.trim() !== '') {
+        const img = document.createElement('img');
+        img.className = 'itinerary-row-photo-img';
+        img.src = it.image;
+        img.alt = it.title || '';
+        photo.appendChild(img);
+      }
 
       const info = document.createElement('div');
       info.className = 'itinerary-row-info';
@@ -110,6 +121,7 @@
       actions.appendChild(editBtn);
       actions.appendChild(deleteBtn);
 
+      row.appendChild(photo);
       row.appendChild(info);
       row.appendChild(actions);
       container.appendChild(row);

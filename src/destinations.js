@@ -59,4 +59,35 @@ router.get('/destinations', (req, res) => {
   res.json(results);
 });
 
+/**
+ * @swagger
+ * /destinations/{id}:
+ *   get:
+ *     summary: Get a single destination by id
+ *     tags: [Destinations]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Destination id
+ *     responses:
+ *       200:
+ *         description: The destination
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: destination not found
+ */
+router.get('/destinations/:id', (req, res) => {
+  const destination = getAllDestinations().find((d) => d.id === req.params.id);
+  if (!destination) {
+    return res.status(404).json({ error: 'destination not found' });
+  }
+  res.json(destination);
+});
+
 module.exports = router;

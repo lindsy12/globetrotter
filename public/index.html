@@ -8,41 +8,42 @@
 <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="app-shell">
-  <nav class="sidebar">
-    <div class="wordmark">GlobeTrotter</div>
-    <ul class="nav-list">
-      <li><a class="nav-item active" href="/index.html">Home</a></li>
-      <li><a class="nav-item" href="/destinations.html">Destinations</a></li>
-      <li><a class="nav-item" href="/itineraries.html">Itineraries</a></li>
-      <li><a class="nav-item" href="/settings.html">Settings</a></li>
-      <li><a class="nav-item" href="#" id="logout-link">Log Out</a></li>
-    </ul>
-  </nav>
+<nav class="topnav">
+  <div class="wordmark">GlobeTrotter</div>
+  <ul class="topnav-links">
+    <li><a class="topnav-link" href="/discover.html">Discover</a></li>
+    <li><a class="topnav-link active" href="/index.html">For You</a></li>
+    <li><a class="topnav-link" href="/destinations.html">Destinations</a></li>
+    <li><a class="topnav-link" href="/itineraries.html">My Trips</a></li>
+  </ul>
+  <div class="topnav-right">
+    <a class="avatar" id="avatar" href="/settings.html" aria-label="Settings"></a>
+    <button type="button" class="topnav-logout" id="logout-link">Log Out</button>
+  </div>
+</nav>
 
-  <main class="content">
-    <div class="content-header">
-      <h1>Recommended For You</h1>
-      <p class="subtext">Picked from your travel preferences.</p>
-    </div>
+<main class="content">
+  <div class="content-header">
+    <h1>Recommended For You</h1>
+    <p class="subtext">Picked from your travel preferences.</p>
+  </div>
 
-    <div class="search-bar">
-      <label for="search">Search destinations</label>
-      <input type="search" id="search" placeholder="Try “market” or “museum”">
-    </div>
+  <div class="search-bar">
+    <label for="search">Search destinations</label>
+    <input type="search" id="search" placeholder="Try “market” or “museum”">
+  </div>
 
-    <div class="destination-grid" id="destination-grid">
-      <p class="subtext">Loading recommendations…</p>
-    </div>
-  </main>
-</div>
+  <div class="destination-grid" id="destination-grid">
+    <p class="subtext">Loading recommendations…</p>
+  </div>
+</main>
 
 <script src="/js/api.js"></script>
 <script>
   requireAuthOrRedirect();
+  renderAvatarInitial(document.getElementById('avatar'));
 
-  document.getElementById('logout-link').addEventListener('click', (e) => {
-    e.preventDefault();
+  document.getElementById('logout-link').addEventListener('click', () => {
     logout();
   });
 

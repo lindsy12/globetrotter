@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destination — GlobeTrotter</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+</head>
+<body>
+<nav class="topnav">
+  <div class="wordmark">GlobeTrotter</div>
+  <ul class="topnav-links">
+    <li><a class="topnav-link" href="/discover.html">Discover</a></li>
+    <li><a class="topnav-link" href="/index.html">For You</a></li>
+    <li><a class="topnav-link" href="/destinations.html">Destinations</a></li>
+    <li><a class="topnav-link" href="/itineraries.html">My Trips</a></li>
+  </ul>
+  <div class="topnav-right">
+    <a class="avatar" id="avatar" href="/settings.html" aria-label="Settings"></a>
+    <button type="button" class="topnav-logout" id="logout-link">Log Out</button>
+  </div>
+</nav>
+
+<main class="content">
+  <div id="destination-detail">
+    <p class="subtext">Loading destination…</p>
+  </div>
+</main>
+
+<script src="/js/api.js"></script>
+<script>
+  requireAuthOrRedirect();
+  renderAvatarInitial(document.getElementById('avatar'));
+
+  document.getElementById('logout-link').addEventListener('click', () => {
+    logout();
+  });
+
+  function renderDestination(dest) {
+    const container = document.getElementById('destination-detail');
+
+    const badgeHtml = getDestinationTags(dest)
+      .map((tag) => `<span class="badge-inline ${tag.type}">${tag.label}</span>`)
+      .join('');
+
+    const location = dest.neighborhood || dest.country || dest.continent || '';
+    const hasCoords = typeof dest.latitude === 'number' && typeof dest.longitude === 'number';
+    const hasImage = typeof dest.image === 'string' && dest.image.trim() !== '';
+
+    const tagPillsHtml = (dest.tags || [])
+      .map((tag) => `<span class="chip">${tag}</span>`)
+      .join('');
+
+    container.innerHTML = `
+      <div class="detail-photo">
+        ${hasImage ? `<img class="detail-photo-img" src="${dest.image}" alt="${dest.name || ''}">` : ''}
+      </div>
+
+      <div class="detail-header">
+        <h1>${dest.name || ''}</h1>
+        ${badgeHtml}
+      </div>
+
+      <div class="location-row detail-location-row">
+        <span class="country">${location}</span>
+        ${hasCoords ? '<button type="button" class="pin-btn" aria-label="View on map">📍</button>' : ''}
+      </div>
+
+      <p class="detail-description">${dest.description || ''}</p>
+
+      <div class="chip-row">${tagPillsHtml}</div>
+
+      ${hasCoords ? `<iframe class="detail-map-embed" loading="lazy" title="Map" src="https://maps.google.com/maps?q=${dest.latitude},${dest.longitude}&z=15&output=embed"></iframe>` : ''}
+
+      <div class="detail-actions">
+        <button type="button" id="add-to-trip-btn" class="btn-primary">+ Add to Trip</button>
+        ${hasCoords ? '<button type="button" id="directions-btn" class="btn-secondary">Get Directions</button>' : ''}
+      </div>
+    `;
+
+    const pinBtn = container.querySelector('.pin-btn');
+    if (pinBtn) {
+      pinBtn.addEventListener('click', () => openMapModal(dest.latitude, dest.longitude));
+    }
+
+    document.getElementById('add-to-trip-btn').addEventListener('click', () => {
+      window.location.href = `/new-itinerary.html?destination=${encodeURIComponent(dest.name || '')}`;
+    });
+
+    const directionsBtn = document.getElementById('directions-btn');
+    if (directionsBtn) {
+      directionsBtn.addEventListener('click', () => openDirectionsModal(dest));
+    }
+  }
+
+  const EMISSION_FACTORS = { flight: 0.25, car: 0.17, walk: 0 };
+  // Car's duration comes from OSRM's real route estimate; flight/walk have no
+  // routing API to ask, so these are rough average-speed assumptions (same
+  // "illustrative, not certified" spirit as the emission factors above).
+  const AVERAGE_SPEED_KMH = { flight: 700, walk: 5 };
+
+  function formatDuration(minutes) {
+    if (minutes < 1) return '< 1 min';
+    if (minutes < 60) return `${Math.round(minutes)} min`;
+    const hours = Math.floor(minutes / 60);
+    const mins = Math.round(minutes % 60);
+    return mins > 0 ? `${hours} hr ${mins} min` : `${hours} hr`;
+  }
+
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) *
+              Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function handleDirectionsModalEscape(e) {
+    if (e.key === 'Escape') closeDirectionsModal();
+  }
+
+  function closeDirectionsModal() {
+    const existing = document.getElementById('directions-modal-overlay');
+    if (existing) {
+      const mapEl = existing.querySelector('#directions-map');
+      if (mapEl && mapEl._leafletMap) {
+        mapEl._leafletMap.remove();
+      }
+      existing.remove();
+    }
+    document.removeEventListener('keydown', handleDirectionsModalEscape);
+  }
+
+  function renderDirectionsMap(mapEl, userLat, userLng, destLat, destLng, routeLatLngs) {
+    mapEl.classList.remove('hidden');
+
+    // Switching modes re-renders the map in place without closing the modal,
+    // so the previous Leaflet instance on this container must be properly
+    // torn down first — clearing innerHTML alone leaves it half-alive and
+    // L.map() throws "Map container is already initialized" on reuse.
+    if (mapEl._leafletMap) {
+      mapEl._leafletMap.remove();
+      mapEl._leafletMap = null;
+    }
+    mapEl.innerHTML = '';
+
+    const map = L.map(mapEl).setView([userLat, userLng], 10);
+    mapEl._leafletMap = map;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(map);
+
+    L.marker([userLat, userLng]).addTo(map).bindPopup('Your location');
+    L.marker([destLat, destLng]).addTo(map).bindPopup('Destination');
+
+    const line = routeLatLngs && routeLatLngs.length
+      ? L.polyline(routeLatLngs, { color: '#6B4226', weight: 4 }).addTo(map)
+      : L.polyline([[userLat, userLng], [destLat, destLng]], { color: '#6B4226', weight: 3, dashArray: '8, 8' }).addTo(map);
+
+    map.fitBounds(line.getBounds(), { padding: [30, 30], animate: false });
+    // Leaflet needs a nudge to size correctly right after its container becomes
+    // visible. Guarded because a fast mode switch can tear this map down (see
+    // the .remove() above) before this fires — calling invalidateSize() on an
+    // already-removed map throws, so only run it if this is still the live map.
+    setTimeout(() => {
+      if (mapEl._leafletMap === map) {
+        map.invalidateSize();
+      }
+    }, 100);
+  }
+
+  function renderDirectionsResult(resultEl, distanceKm, durationMinutes, mode) {
+    const totalKg = distanceKm * EMISSION_FACTORS[mode];
+
+    let tier;
+    if (totalKg < 50) tier = 'low';
+    else if (totalKg <= 200) tier = 'medium';
+    else tier = 'high';
+
+    resultEl.innerHTML = `
+      <p class="directions-distance">${distanceKm.toFixed(1)} km <span class="directions-duration">· ${formatDuration(durationMinutes)}</span></p>
+      <p class="directions-footprint">~${totalKg.toFixed(1)} kg CO<sub>2</sub></p>
+      <span class="badge-tier ${tier}">${tier} impact</span>
+    `;
+  }
+
+  // Cached once geolocation succeeds, for the lifetime of this page load —
+  // so switching modes (or reopening the modal) after the first successful
+  // grant never re-prompts or waits again.
+  let cachedLocation = null;
+
+  function getUserLocation(statusEl) {
+    return new Promise((resolve, reject) => {
+      if (cachedLocation) {
+        resolve(cachedLocation);
+        return;
+      }
+      if (!navigator.geolocation) {
+        reject(new Error('unsupported'));
+        return;
+      }
+      statusEl.textContent = 'Getting your location…';
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          cachedLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+          resolve(cachedLocation);
+        },
+        () => reject(new Error('denied'))
+      );
+    });
+  }
+
+  /**
+   * Opens the "Get Directions" modal: tapping a mode icon immediately
+   * requests location (only if not already granted this page load) and
+   * calculates that mode's route — OSRM road route (car) or Haversine
+   * straight-line (flight/walk, since the free OSRM demo has no real
+   * pedestrian-route data) — updating the map/result in place.
+   * Scoped to destination.html only.
+   */
+  function openDirectionsModal(dest) {
+    closeDirectionsModal();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'map-modal-overlay';
+    overlay.id = 'directions-modal-overlay';
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeDirectionsModal();
+    });
+
+    const modal = document.createElement('div');
+    modal.className = 'directions-modal';
+    modal.innerHTML = `
+      <button type="button" class="map-modal-close" aria-label="Close">×</button>
+      <h3 class="directions-modal-title">Get Directions to ${dest.name || ''}</h3>
+      <div class="mode-icon-row" id="mode-icon-row">
+        <button type="button" class="mode-icon-btn" data-mode="flight" aria-label="Flight"><i class="ti ti-plane"></i><span class="mode-icon-label">Flight</span></button>
+        <button type="button" class="mode-icon-btn" data-mode="car" aria-label="Car"><i class="ti ti-car"></i><span class="mode-icon-label">Car</span></button>
+        <button type="button" class="mode-icon-btn" data-mode="walk" aria-label="Walk"><i class="ti ti-walk"></i><span class="mode-icon-label">Walk</span></button>
+      </div>
+      <p id="directions-status" class="subtext directions-status"></p>
+      <div id="directions-map" class="directions-map hidden"></div>
+      <div id="directions-result" class="directions-result"></div>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.addEventListener('keydown', handleDirectionsModalEscape);
+
+    modal.querySelector('.map-modal-close').addEventListener('click', closeDirectionsModal);
+
+    const statusEl = modal.querySelector('#directions-status');
+    const resultEl = modal.querySelector('#directions-result');
+    const mapEl = modal.querySelector('#directions-map');
+
+    // Guards against out-of-order async results: rapid taps fire overlapping
+    // geolocation/OSRM calls that can resolve in a different order than they
+    // were requested (e.g. a slow Car fetch finishing after a fast Flight
+    // calc). Each click captures the current sequence number and only
+    // applies its result if nothing newer has been tapped since.
+    let requestSeq = 0;
+
+    modal.querySelectorAll('.mode-icon-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        modal.querySelectorAll('.mode-icon-btn').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.dataset.mode;
+        const mySeq = ++requestSeq;
+
+        resultEl.innerHTML = '';
+        statusEl.textContent = '';
+
+        let location;
+        try {
+          location = await getUserLocation(statusEl);
+        } catch (err) {
+          if (mySeq !== requestSeq) return;
+          mapEl.classList.add('hidden');
+          statusEl.textContent = 'Location access needed to calculate directions and distance — please allow location access and try again.';
+          return;
+        }
+
+        if (mySeq !== requestSeq) return;
+        statusEl.textContent = 'Calculating route…';
+
+        try {
+          let distanceKm;
+          let durationMinutes;
+          let routeLatLngs = null;
+
+          if (mode === 'car') {
+            const url = `https://router.project-osrm.org/route/v1/driving/${location.lng},${location.lat};${dest.longitude},${dest.latitude}?overview=full&geometries=geojson`;
+            const res = await fetch(url);
+            const data = await res.json();
+            if (!data.routes || !data.routes.length) {
+              throw new Error('No route found');
+            }
+            const route = data.routes[0];
+            distanceKm = route.distance / 1000;
+            durationMinutes = route.duration / 60; // real OSRM estimate
+            routeLatLngs = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+          } else {
+            distanceKm = haversineDistance(location.lat, location.lng, dest.latitude, dest.longitude);
+            durationMinutes = (distanceKm / AVERAGE_SPEED_KMH[mode]) * 60;
+          }
+
+          if (mySeq !== requestSeq) return;
+
+          renderDirectionsMap(mapEl, location.lat, location.lng, dest.latitude, dest.longitude, routeLatLngs);
+          renderDirectionsResult(resultEl, distanceKm, durationMinutes, mode);
+          statusEl.textContent = '';
+        } catch (err) {
+          if (mySeq !== requestSeq) return;
+          statusEl.textContent = 'Could not calculate directions right now. Please try again.';
+        }
+      });
+    });
+  }
+
+  function showError(message) {
+    document.getElementById('destination-detail').innerHTML =
+      `<p class="error-text visible">${message}</p>`;
+  }
+
+  async function loadDestination() {
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) {
+      showError('No destination id was given.');
+      return;
+    }
+
+    try {
+      const dest = await apiFetch(`/destinations/${encodeURIComponent(id)}`);
+      renderDestination(dest);
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  loadDestination();
+</script>
+</body>
+</html>
